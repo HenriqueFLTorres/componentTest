@@ -1,8 +1,59 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import Head from "next/head";
+import { useEffect, useRef, useState } from "react";
+import Cursor from "../components/Cursor.tsx";
+import ImageContainer from "../components/ImageContainer.tsx";
+import styles from "../styles/Home.module.css";
+
+const arr = [0, 1, 2, 3, 4, 5];
 
 export default function Home() {
+  const [list, setList] = useState({});
+  const [order, setOrder] = useState({
+    element0: 0,
+    element1: 1,
+    element2: 2,
+    element3: 3,
+    element4: 4,
+    element5: 5,
+    // changed: null
+  });
+  const [render, setRender] = useState(0)
+
+  const refs = useRef([]);
+
+  // maps through every element and sets the needed properties for later use
+  useEffect(() => {
+    let elementList = {};
+
+    refs.current.map((item, index) => {
+      elementList[`element${index}`] = {
+        top: item.getBoundingClientRect().top,
+        left: item.getBoundingClientRect().left,
+        right: item.getBoundingClientRect().right,
+        bottom: item.getBoundingClientRect().bottom,
+        x: item.offsetLeft + 200,
+        y: item.offsetTop + 150,
+      };
+    });
+
+    setList(elementList);
+  }, []);
+
+  // modify order of elements accoarding to the changed property
+  // useEffect(() => {
+  //   let newOrder = order;
+  //   if (order.changed) {
+  //     console.log("asdf");
+  //     Object.entries(order).map((element) => {
+  //       if (element[1] === order.changed) {
+  //         newOrder[element[0]] = 500;
+  //       }
+  //     });
+
+  //     setOrder(newOrder);
+  //   }
+  // }, [order]);
+
   return (
     <div className={styles.container}>
       <Head>
@@ -11,59 +62,44 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+      <h1 onClick={() => {
+        console.log(order)
+        setRender(render + 1)
+      }}>asdfasdf</h1>
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+      <div className={styles["big-wrapper"]}>
+        <div className={styles["container-wrapper"]}>
+          {arr.map((item, index) => {
+            return (
+              <div
+                className={styles.wrapper}
+                key={index}
+                ref={(element) => {
+                  refs.current[index] = element;
+                }}
+              >
+                {item}
+              </div>
+            );
+          })}
         </div>
-      </main>
 
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
+        <div className={styles["image-wrapper"]}>
+          {arr.map((item, index) => {
+            return (
+              <ImageContainer
+                key={index}
+                list={list}
+                setList={setList}
+                globalOrder={order}
+                setGlobalOrder={setOrder}
+                color="blue"
+                index={index}
+              />
+            );
+          })}
+        </div>
+      </div>
     </div>
-  )
+  );
 }
