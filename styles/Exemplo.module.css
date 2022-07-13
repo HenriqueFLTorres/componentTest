@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+}
+
+.image {
+  width: 200px;
+  height: 200px;
+  position: relative;
+}
+
+.hovered {
+  border: 2px dashed blue;
+}
